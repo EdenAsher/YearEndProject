@@ -1,0 +1,40 @@
+﻿{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+
+<h2>{{ message }}</h2>
+
+
+<body style="background-color:#FCE899;">
+</body>
+
+<div style="background-color:#FCE899;">
+    <form method=post>
+        {{ form.csrf }}
+        <table>
+            <tr>
+                <td class="input text"> {{ form.poketypes.label }} </td>
+                <td>                    {{ form.poketypes }}       </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td class="input submit"> <input type="submit" value="Submit"> </td>
+            </tr>
+        </table>
+    </form>
+    <hr />
+    <div class="row">
+
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            <img src={{ chart }} class="img-thumbnail" alt="not found" height={{height}} width={{ width }}>
+        </div>
+    </div>
+
+    <hr />
+
+</div>
+{% endblock %}
+

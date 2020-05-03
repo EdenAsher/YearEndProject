@@ -31,6 +31,9 @@
     <Compile Include="runserver.py" />
     <Compile Include="YearEndProject\Models\LocalDatabaseRoutines.py" />
     <Compile Include="YearEndProject\Models\QueryFormStructure.py" />
+    <Compile Include="YearEndProject\plot_service_functions.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="YearEndProject\__init__.py" />
     <Compile Include="YearEndProject\views.py" />
   </ItemGroup>
@@ -51,6 +54,7 @@
     <Content Include="YearEndProject\static\content\bootstrap.min.css" />
     <Content Include="YearEndProject\static\content\site.css" />
     <Content Include="YearEndProject\static\Data\Pokemon.csv" />
+    <Content Include="YearEndProject\static\Data\Types.csv" />
     <Content Include="YearEndProject\static\Data\users.csv" />
     <Content Include="YearEndProject\static\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="YearEndProject\static\fonts\glyphicons-halflings-regular.svg" />
@@ -82,6 +86,9 @@
     <Content Include="YearEndProject\templates\index.html" />
     <Content Include="YearEndProject\templates\layout.html" />
     <Content Include="YearEndProject\templates\login.html" />
+    <Content Include="YearEndProject\templates\query.html" />
+    <Content Include="YearEndProject\templates\query3.html" />
+    <Content Include="YearEndProject\templates\query2.html" />
     <Content Include="YearEndProject\templates\register.html" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Web.targets" />

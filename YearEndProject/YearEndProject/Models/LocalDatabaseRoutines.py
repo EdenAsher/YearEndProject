@@ -8,6 +8,15 @@ import pandas as pd
 def create_LocalDatabaseServiceRoutines():
     return LocalDatabaseServiceRoutines()
 
+def get_poketypes_choices():
+    df = pd.read_csv(path.join(path.dirname(__file__), "..\\static\\data\\Types.csv"))
+    df1 = df.groupby('type').sum()
+    #df_short_state = df_short_state.set_index('Code')
+    #df_short_state = df_short_state.sort_index()
+    l = df1.index
+    m = list(zip(l , l))
+    return m
+
 class LocalDatabaseServiceRoutines(object):
     def __init__(self):
         self.name = 'Data base service routines'

@@ -24,7 +24,15 @@ import requests
 import io
 import base64
 
+import matplotlib.pyplot as plt
+
+from matplotlib.figure import Figure
+
+from YearEndProject.plot_service_functions import plot_to_img
+
 from os import path
+
+from flask_bootstrap import Bootstrap
 
 from flask   import Flask, render_template, flash, request
 from wtforms import Form, BooleanField, StringField, PasswordField, validators
@@ -33,8 +41,20 @@ from wtforms import ValidationError
 
 
 from YearEndProject.Models.QueryFormStructure import QueryFormStructure 
+from YearEndProject.Models.QueryFormStructure import QueryFormStructure2
 from YearEndProject.Models.QueryFormStructure import LoginFormStructure 
 from YearEndProject.Models.QueryFormStructure import UserRegistrationFormStructure 
+
+from YearEndProject.Models.QueryFormStructure import ExpandForm
+from YearEndProject.Models.QueryFormStructure import CollapseForm
+from YearEndProject.Models.LocalDatabaseRoutines import get_poketypes_choices
+
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+
+bootstrap = Bootstrap(app)
+
 
 db_Functions = create_LocalDatabaseServiceRoutines() 
 
@@ -125,7 +145,6 @@ def DataSet1():
     df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\Pokemon.csv'))
     raw_data_table = df.to_html(classes = 'table table-hover')
 
-
     """Renders the contact page."""
     return render_template(
         'DataSet1.html',
@@ -133,4 +152,106 @@ def DataSet1():
         raw_data_table = raw_data_table,
         year=datetime.now().year,
         message='In this page we will display the dataset we are using about pokemon.'
+    )
+
+@app.route('/Query', methods=['GET', 'POST'])
+def Query():
+
+    form = QueryFormStructure2(request.form)
+    Name = ''
+    Type1 = ''
+    df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\Pokemon.csv'))
+    df = df.set_index('Name')
+
+    raw_data_table = df.to_html(classes = 'table table-hover')
+
+
+    if (request.method == 'POST' ):
+        name = form.name.data
+        Pokemon = name
+        if (name in df.index):
+            Type1 = df.loc[name,'Type1']
+            raw_data_table = ""
+        else:
+            Type1 = name + ', no such pokemon'
+        form.name.data = ''
+
+
+    """Renders the query page."""
+    return render_template(
+        'Query.html',
+        form = form, 
+        name = Type1,
+        title='Project in data science',
+        year=datetime.now().year,
+        message='First type of a pokemon:'
+    )
+
+@app.route('/query2', methods=['GET', 'POST'])
+def query2():
+
+    form = QueryFormStructure2(request.form)
+    Name = ''
+    Type2 = ''
+    df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\Pokemon.csv'))
+    df = df.set_index('Name')
+
+    raw_data_table = df.to_html(classes = 'table table-hover')
+
+
+    if (request.method == 'POST' ):
+        name = form.name.data
+        Pokemon = name
+        if (name in df.index):
+            Type2 = df.loc[name,'Type2']
+            raw_data_table = ""
+        else:
+            Type2 = name + ', no such pokemon'
+        form.name.data = ''
+
+
+    """Renders the query page."""
+    return render_template(
+        'Query2.html',
+        form = form, 
+        name = Type2,
+        title='Project in data science',
+        year=datetime.now().year,
+        message='Second type of a pokemon:'
+    )
+
+@app.route('/query3', methods=['GET', 'POST'])
+def query3():
+
+    form = QueryFormStructure(request.form)
+    form.poketypes.choices = get_poketypes_choices() 
+    poketypes = ''
+    chart = ''
+    #select = ''
+    if (request.method == 'POST' ):
+        df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\Types.csv'))
+        df = df.set_index('type')
+        df = df.loc[[form.poketypes.data]]
+        #df = df.rename(columns={'type': 'type'})
+        df = df.groupby('type').count()
+        df = df.transpose()
+        df = df.reset_index()
+        #df = df.drop(['index'], 1)
+        df = df.tail(30)
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        df.plot(ax = ax , kind = 'bar')
+        chart = plot_to_img(fig)
+
+    
+
+    return render_template(
+        'Query3.html',
+        img_under_construction = '/static/imgs/under_construction.png',
+        chart = chart ,
+        poketypes = poketypes ,
+        form = form ,
+        height = "300" ,
+        width = "750"
     )

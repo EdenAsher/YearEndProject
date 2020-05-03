@@ -6,6 +6,7 @@ from datetime import datetime
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
+from wtforms import DateField, SelectMultipleField
 from wtforms import Form, BooleanField, PasswordField
 from wtforms import TextField, TextAreaField, SelectField, DateField
 from wtforms import validators, ValidationError
@@ -22,9 +23,15 @@ from wtforms.validators import DataRequired
 ##   the 'submit' button - the button the user will press to have the 
 ##                         form be "posted" (sent to the server for process)
 class QueryFormStructure(FlaskForm):
-    name   = StringField('Country Name:  ' , validators = [DataRequired()])
+    poketypes = SelectMultipleField('Select Multiple:', validators = [DataRequired] )
     submit = SubmitField('Submit')
 
+class QueryFormStructure2(FlaskForm):
+    pokemonname = TextField("Pokemon Name",[validators.Required("Please enter a pokemon name.")])
+    name = TextField("Name",[validators.Required("Please enter a pokemon name.")])
+    select = SelectField(u'Type 1', choices=['Ice','Water','Fire','Grass',])
+    type = SelectField(u'Type', choices=['bug' , 'dark' , 'dragon' , 'electric' , 'fairy', 'fighting' , 'fire' , 'flying' , 'ghost' , 'grass' , 'ground' , 'ice' , 'normal' , 'poison' , 'psychic' , 'rock' , 'steel' , 'water'])
+    submit = SubmitField('Submit')
 
 
 
@@ -40,6 +47,7 @@ class LoginFormStructure(FlaskForm):
     username   = StringField('User name:  ' , validators = [DataRequired()])
     password   = PasswordField('Password:  ' , validators = [DataRequired()])
     submit = SubmitField('Submit')
+    
 
 
 
@@ -56,12 +64,12 @@ class LoginFormStructure(FlaskForm):
 ##   the 'submit' button - the button the user will press to have the 
 ##                         form be "posted" (sent to the server for process)
 class UserRegistrationFormStructure(FlaskForm):
-    FirstName  = StringField('First name:  ' , validators = [DataRequired()])
-    LastName   = StringField('Last name:  ' , validators = [DataRequired()])
-    PhoneNum   = StringField('Phone number:  ' , validators = [DataRequired()])
-    EmailAddr  = StringField('E-Mail:  ' , validators = [DataRequired()])
-    username   = StringField('User name:  ' , validators = [DataRequired()])
-    password   = PasswordField('Password:  ' , validators = [DataRequired()])
+    FirstName  = StringField('First name:  ' , [validators.Required("Please enter your first name.")])
+    LastName   = StringField('Last name:  ' , [validators.Required("Please enter your last name.")])
+    PhoneNum   = StringField('Phone number:  ' , [validators.Required("Please enter your phone number.")])
+    EmailAddr  = StringField('E-Mail:  ' , validators = [validators.Required("Please enter your email adress.")])
+    username   = StringField('User name:  ' , validators = [validators.Required("Please enter your username.")])
+    password   = PasswordField('Password:  ' , validators = [validators.Required("Please enter your password.")])
     submit = SubmitField('Submit')
 
 ## This class have the fields that the user can set, to have the query parameters for analysing the data
@@ -76,4 +84,14 @@ class UserRegistrationFormStructure(FlaskForm):
 #    
 #    submit = SubmitField('Submit')
 
+
+class ExpandForm(FlaskForm):
+	submit1 = SubmitField('Expand')
+	name="Expand"
+	value="Expand"
+ 
+class CollapseForm(FlaskForm):
+	submit2 = SubmitField('Collapse')
+	name="Collapse"
+	value="Collapse"
 
