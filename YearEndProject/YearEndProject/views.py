@@ -231,13 +231,13 @@ def query3():
     if (request.method == 'POST' ):
         df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\Types.csv'))
         df = df.set_index('type')
-        df = df.loc[[form.poketypes.data]]
+        types = form.poketypes.data
+        df = df.loc[form.poketypes.data]
+        #df = df.loc[['bug','dark','dragon','fairy','fighting','fire','flying','ghost','grass','ground','ice','normal','poison','psychic','rock','steel','water']]
         #df = df.rename(columns={'type': 'type'})
-        df = df.groupby('type').count()
         df = df.transpose()
         df = df.reset_index()
-        #df = df.drop(['index'], 1)
-        df = df.tail(30)
+        df = df.drop(['index'],1)
 
         fig = plt.figure()
         ax = fig.add_subplot(111)

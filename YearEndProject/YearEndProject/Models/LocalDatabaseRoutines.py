@@ -10,14 +10,24 @@ def create_LocalDatabaseServiceRoutines():
 
 def get_poketypes_choices():
     df = pd.read_csv(path.join(path.dirname(__file__), "..\\static\\data\\Types.csv"))
-    df1 = df.groupby('type').sum()
+    #s = df.set_index('type')#['State']
+    df = df.groupby('type').sum()
     #df_short_state = df_short_state.set_index('Code')
     #df_short_state = df_short_state.sort_index()
-    l = df1.index
+    l = df.index
     m = list(zip(l , l))
+    #m = list(l , l)
     return m
 
-class LocalDatabaseServiceRoutines(object):
+def plot_to_img(fig):
+    pngImage = io.BytesIO()
+    FigureCanvas(fig).print_png(pngImage)
+    pngImageB64String = "data:image/png;base64,"
+    pngImageB64String += base64.b64encode(pngImage.getvalue()).decode('utf8')
+    return pngImageB64String
+
+class LocalDatabaseServiceRoutines(
+    ):
     def __init__(self):
         self.name = 'Data base service routines'
         self.index = {}
