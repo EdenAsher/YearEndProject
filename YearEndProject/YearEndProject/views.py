@@ -227,7 +227,6 @@ def query3():
     form.poketypes.choices = get_poketypes_choices() 
     poketypes = ''
     chart = ''
-    #select = ''
     if (request.method == 'POST' ):
         df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\Types.csv'))
         df = df.set_index('type')
