@@ -28,8 +28,6 @@ import requests
 import io
 import base64
 
-import matplotlib.pyplot as plt
-
 from matplotlib.figure import Figure
 
 from YearEndProject.plot_service_functions import plot_to_img
@@ -52,10 +50,6 @@ from YearEndProject.Models.QueryFormStructure import UserRegistrationFormStructu
 from YearEndProject.Models.QueryFormStructure import ExpandForm
 from YearEndProject.Models.QueryFormStructure import CollapseForm
 from YearEndProject.Models.LocalDatabaseRoutines import get_poketypes_choices
-
-import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
 
 bootstrap = Bootstrap(app)
 
