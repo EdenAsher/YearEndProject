@@ -4,21 +4,22 @@ Used structures and classes
 from os import path
 import json
 import pandas as pd
+from flask_wtf import FlaskForm
+from wtforms import SubmitField
+
 
 def create_LocalDatabaseServiceRoutines():
     return LocalDatabaseServiceRoutines()
 
+#gets the list of types from the data
 def get_poketypes_choices():
     df = pd.read_csv(path.join(path.dirname(__file__), "..\\static\\data\\Types.csv"))
-    #s = df.set_index('type')#['State']
     df = df.groupby('type').sum()
-    #df_short_state = df_short_state.set_index('Code')
-    #df_short_state = df_short_state.sort_index()
     l = df.index
     m = list(zip(l , l))
-    #m = list(l , l)
     return m
 
+#makes the graph
 def plot_to_img(fig):
     pngImage = io.BytesIO()
     FigureCanvas(fig).print_png(pngImage)
@@ -27,6 +28,7 @@ def plot_to_img(fig):
     return pngImageB64String
 
 class LocalDatabaseServiceRoutines(
+    #(: (:
     ):
     def __init__(self):
         self.name = 'Data base service routines'
@@ -78,3 +80,13 @@ class LocalDatabaseServiceRoutines(
         dfComplete = df.append(dfNew, ignore_index=True)
         self.WriteCSVToFile_users(dfComplete)
 
+#expand and collapse.
+class ExpandForm(FlaskForm):
+	submit1 = SubmitField('Expand')
+	name="Expand"
+	value="Expand"
+ 
+class CollapseForm(FlaskForm):
+	submit2 = SubmitField('Collapse')
+	name="Collapse"
+	value="Collapse"

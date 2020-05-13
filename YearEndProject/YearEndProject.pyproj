@@ -82,6 +82,7 @@
     <Content Include="YearEndProject\templates\about.html" />
     <Content Include="YearEndProject\templates\contact.html" />
     <Content Include="YearEndProject\templates\DataModel.html" />
+    <Content Include="YearEndProject\templates\DataSet2.html" />
     <Content Include="YearEndProject\templates\DataSet1.html" />
     <Content Include="YearEndProject\templates\index.html" />
     <Content Include="YearEndProject\templates\layout.html" />

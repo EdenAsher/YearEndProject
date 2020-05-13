@@ -7,8 +7,12 @@ from flask import render_template
 from YearEndProject import app
 from YearEndProject.Models.LocalDatabaseRoutines import create_LocalDatabaseServiceRoutines
 
-from datetime import datetime
-from flask import render_template, redirect, request
+from flask_bootstrap import Bootstrap
+
+from YearEndProject.Models.LocalDatabaseRoutines import ExpandForm
+from YearEndProject.Models.LocalDatabaseRoutines import CollapseForm
+
+from flask import redirect, request
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
@@ -55,17 +59,14 @@ import numpy as np
 
 bootstrap = Bootstrap(app)
 
-
 db_Functions = create_LocalDatabaseServiceRoutines() 
 
 @app.route('/')
 @app.route('/home')
 def home():
-    """Renders the home page."""
     return render_template(
         'index.html',
         title='Home Page',
-        year=datetime.now().year,
     )
 
 @app.route('/contact')
@@ -74,7 +75,6 @@ def contact():
     return render_template(
         'contact.html',
         title='Contact',
-        year=datetime.now().year,
         message='Your contact page.'
     )
 
@@ -84,14 +84,15 @@ def about():
     return render_template(
         'about.html',
         title='Project in data science',
-        year=datetime.now().year,
         message='Project in data science'
     )
 
 @app.route('/register', methods=['GET', 'POST'])
 def Register():
+    #register page
     form = UserRegistrationFormStructure(request.form)
 
+    #Registers a new user, makes sure the username and password are original, adds the user to users.csv
     if (request.method == 'POST' and form.validate()):
         if (not db_Functions.IsUserExist(form.username.data)):
             db_Functions.AddNewUser(form)
@@ -106,66 +107,95 @@ def Register():
         'register.html', 
         form=form, 
         title='Register New User',
-        year=datetime.now().year,
         repository_name='Pandas',
         )
 
 @app.route('/login', methods=['GET', 'POST'])
 def Login():
-    form = LoginFormStructure(request.form)
+    #login page
+    form = LoginFormStructure(request.form) #takes the form we created.
 
-    if (request.method == 'POST' and form.validate()):
-        if (db_Functions.IsLoginGood(form.username.data, form.password.data)):
-            flash('Login approved!')
-            #return redirect('<were to go if login is good!')
+    if (request.method == 'POST' and form.validate()): #when the user clicks submit
+        if (db_Functions.IsLoginGood(form.username.data, form.password.data)): #checks that the login is "good"
+            return redirect('query3') #takes the user to query3
         else:
-            flash('Error in - Username and/or password')
+            flash('Error in - Username and/or password') #if the login isn't good, it brings up an error.
    
     return render_template(
         'login.html', 
         form=form, 
         title='Login to data analysis',
-        year=datetime.now().year,
         repository_name='Pandas',
         )
 
 @app.route('/DataModel')
 def DataModel():
-    """Renders the contact page."""
+    """Renders the data model page."""
     return render_template(
         'DataModel.html',
-        title='This is my Data Model page about pokemon',
-        year=datetime.now().year,
-        message='In this page we will display the dataset we are going to use in this project'
+        title='This is my Data Model page about Pokémon',
     )
 
-@app.route('/DataSet1')
+@app.route('/DataSet1', methods=['GET', 'POST'])
 def DataSet1():
 
-    df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\Pokemon.csv'))
-    raw_data_table = df.to_html(classes = 'table table-hover')
+    form1 = ExpandForm()
+    form2 = CollapseForm()
+    df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\Pokemon.csv')) #Reads the csv
+    raw_data_table = ''
 
-    """Renders the contact page."""
+    #Expand and collapse, sample randomizer.
+    if (request.method == 'POST'): 
+        if (request.form['action'] == 'Expand' and form1.validate_on_submit()):
+            raw_data_table = df.sample(30).to_html(classes = 'table table-hover')
+        if (request.form['action'] == 'Collapse' and form2.validate_on_submit()):
+            raw_data_table = ''
+
     return render_template(
         'DataSet1.html',
-        title='This is Data Set 1 page',
         raw_data_table = raw_data_table,
-        year=datetime.now().year,
-        message='In this page we will display the dataset we are using about pokemon.'
+        form1 = form1,
+        form2 = form2,
+        title='This is Data Set 1 page',
+        message='In this page we will display the dataset we are using about Pokémon.'
+    )
+
+@app.route('/DataSet2', methods=['GET', 'POST'])
+def DataSet2():
+
+    form1 = ExpandForm()
+    form2 = CollapseForm()
+    df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\Types.csv')) #Reads the csv
+    raw_data_table = ''
+
+    #Expand and collapse, sample randomizer.
+    if (request.method == 'POST'):
+        if (request.form['action'] == 'Expand' and form1.validate_on_submit()):
+            raw_data_table = df.to_html(classes = 'table table-hover')
+        if (request.form['action'] == 'Collapse' and form2.validate_on_submit()):
+            raw_data_table = ''
+
+    return render_template(
+        'DataSet2.html',
+        raw_data_table = raw_data_table,
+        form1 = form1,
+        form2 = form2,
+        title='This is Data Set 2 page',
+        message='In this page we will display the dataset we are using about Pokémon.'
     )
 
 @app.route('/Query', methods=['GET', 'POST'])
 def Query():
 
-    form = QueryFormStructure2(request.form)
+    form = QueryFormStructure2(request.form) #gets the form we created in QueryFormStructure in models.
     Name = ''
     Type1 = ''
-    df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\Pokemon.csv'))
+    df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\Pokemon.csv')) #reads the csv (data)
     df = df.set_index('Name')
 
     raw_data_table = df.to_html(classes = 'table table-hover')
 
-
+    #Checks if the pokemon exists and than if it is, returns its type.
     if (request.method == 'POST' ):
         name = form.name.data
         Pokemon = name
@@ -183,22 +213,22 @@ def Query():
         form = form, 
         name = Type1,
         title='Project in data science',
-        year=datetime.now().year,
         message='First type of a pokemon:'
     )
+
 
 @app.route('/query2', methods=['GET', 'POST'])
 def query2():
 
-    form = QueryFormStructure2(request.form)
+    form = QueryFormStructure2(request.form) #gets the form we created in QueryFormStructure in models.
     Name = ''
     Type2 = ''
-    df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\Pokemon.csv'))
+    df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\Pokemon.csv')) #reads csv (data)
     df = df.set_index('Name')
 
     raw_data_table = df.to_html(classes = 'table table-hover')
 
-
+    #Checks if the pokemon exists and than if it is, returns its second type.
     if (request.method == 'POST' ):
         name = form.name.data
         Pokemon = name
@@ -216,28 +246,26 @@ def query2():
         form = form, 
         name = Type2,
         title='Project in data science',
-        year=datetime.now().year,
         message='Second type of a pokemon:'
     )
 
 @app.route('/query3', methods=['GET', 'POST'])
 def query3():
 
-    form = QueryFormStructure(request.form)
-    form.poketypes.choices = get_poketypes_choices() 
+    form = QueryFormStructure(request.form) #gets the form we created in QueryFormStructure in models.
+    form.poketypes.choices = get_poketypes_choices() #lets us use what we created in LocalDatabaseRoutines
     poketypes = ''
     chart = ''
     if (request.method == 'POST' ):
-        df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\Types.csv'))
-        df = df.set_index('type')
+        df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\Types.csv')) #reads data
+        df = df.set_index('type') #sets the index to "type"
         types = form.poketypes.data
-        df = df.loc[form.poketypes.data]
-        #df = df.loc[['bug','dark','dragon','fairy','fighting','fire','flying','ghost','grass','ground','ice','normal','poison','psychic','rock','steel','water']]
-        #df = df.rename(columns={'type': 'type'})
-        df = df.transpose()
+        df = df.loc[form.poketypes.data] #makes it that it only gets what the user selected
+        df = df.transpose()#changes rows to colums and vice versa, we use this to organize things so it's easier to use.
         df = df.reset_index()
-        df = df.drop(['index'],1)
+        df = df.drop(['index'],1) #drops what we don't need
 
+        #the following 4 lines render the actual graph
         fig = plt.figure()
         ax = fig.add_subplot(111)
         df.plot(ax = ax , kind = 'bar')
@@ -247,7 +275,7 @@ def query3():
 
     return render_template(
         'Query3.html',
-        img_under_construction = '/static/imgs/under_construction.png',
+        img_under_construction = '/static/imgs/under_construction.png',#part of creating the graph
         chart = chart ,
         poketypes = poketypes ,
         form = form ,
